@@ -1,5 +1,5 @@
 name: canonical-doc-utils
-version: '0.2.5' 
+version: '0.2.9' 
 summary: tools for working with Canonical docs repositories
 description: |
   This provides a number of commands for dealing with documentation 
@@ -16,7 +16,7 @@ parts:
   canonical-doc-utils:
     # See 'snapcraft plugins'
     plugin: python
-    source: https://github.com/evilnick/canonical-doc-utils.git
+    source: https://github.com/canonical-documentation/canonical-doc-utils.git
   git:
     plugin: autotools
     source: https://github.com/git/git/archive/v2.10.2.tar.gz

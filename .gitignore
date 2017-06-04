@@ -1,7 +1,7 @@
 #snapcraft stuff
-./stage
-./prime
-./parts
-./dist
-./build
-
+stage/
+prime/
+parts/
+dist/
+build/
+*.snap
