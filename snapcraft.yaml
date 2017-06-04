@@ -1,22 +1,26 @@
 name: canonical-doc-utils
-version: '0.2.9' 
+version: '0.2.10' 
 summary: tools for working with Canonical docs repositories
 description: |
   This provides a number of commands for dealing with documentation 
   repositories built with documentation-builder
 grade: devel # must be 'stable' to release into candidate/stable channels
-confinement: strict 
+confinement: classic
 icon: images/docs-logo.svg
 apps:
   backport:
+    plugs: 
+        - network
+        - home
     command: bin/docs-backport
   cleanfork:
+    plugs:
+        - network
+        - home
     command: bin/docs-cleanfork
 parts:
   canonical-doc-utils:
     # See 'snapcraft plugins'
     plugin: python
     source: https://github.com/canonical-documentation/canonical-doc-utils.git
-  git:
-    plugin: autotools
-    source: https://github.com/git/git/archive/v2.10.2.tar.gz
+
