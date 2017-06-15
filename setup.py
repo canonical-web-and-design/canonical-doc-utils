@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 
 setup(name='CanonicalDocUtils',
-      version='0.2.10',
+      version='0.2.15',
       description='Utilities for managing docs team tasks',
       author='Canonical Docs team',
       author_email='nick.veitch+pypi@canonical.com',
@@ -19,6 +19,7 @@ setup(name='CanonicalDocUtils',
         'console_scripts': [
             'docs-backport=CanonicalDocUtils.cli.bporter:main',
             'docs-cleanfork=CanonicalDocUtils.cli.cleanfork:main',
+            'docs-juju-commandgen=CanonicalDocUtils.cli.commandgen3:main',
         ],
 
     }
