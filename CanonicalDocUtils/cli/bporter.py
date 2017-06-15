@@ -65,7 +65,8 @@ def main():
     args.repo=repo_dict[args.repo]
     try:
       docsrepo=g.get_repo(args.repo)
-      pull_list=list(docsrepo.get_pulls('closed'))
+      pl=docsrepo.get_pulls('closed')
+      pull_list=pl.get_page(0)
     except GithubException as e:
       if e.status == 401:
         print("ERROR: credentials were not accepted by GitHub. Exiting...")
