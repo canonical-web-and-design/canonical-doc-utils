@@ -1,0 +1,72 @@
+#!/usr/bin/env python3
+import argparse
+import subprocess
+import os, sys
+
+JUJUEXE = "juju"
+
+def parse_args(parser, args=None):
+#    if args is None:
+#        args = sys.argv[1:]
+    return parser.parse_args(args)
+
+
+def main():
+   parser = argparse.ArgumentParser(description='Generates an internal list of currently supported commands and compares them against different versions of Juju.')
+   parser.add_argument('jujuargs', nargs=argparse.REMAINDER)
+   args = parse_args(parser)
+
+   # Get version string
+   jujuversion = subprocess.check_output([JUJUEXE, 'version'], universal_newlines=False)
+
+   # Run Juju with arguments
+   #jujuoutput = subprocess.check_output([JUJUEXE] + args.jujuargs)
+
+   jujuoutput = subprocess.check_output([JUJUEXE, 'help', 'commands'])
+
+   # Remove byte code andsssss feed
+   jujuversion = bytes.decode(jujuversion)
+   jujuversion = jujuversion.strip('\n')
+   jujuvnumber = jujuversion.split('-',1)[0]
+
+   jujuoutput = bytes.decode(jujuoutput)
+   jujuoutput = jujuoutput[:-1]
+
+   # Create folder to hold versioned help files
+   if not os.path.exists(jujuvnumber):
+       os.makedirs(jujuvnumber)
+
+   for line in jujuoutput.splitlines():
+       parseHelpLine(jujuvnumber, line)
+
+   # Create folder to hold versioned help files
+   if not os.path.exists(jujuvnumber):
+       os.makedirs(jujuvnumber)
+   
+   # Create a text file containing the command help 
+   with open((os.path.join(jujuvnumber,"commands")), "w") as command_file:
+       command_file.write(jujuoutput)
+   
+   # Create a text file containing the version 
+   with open((os.path.join(jujuvnumber,"VERSION")), "w") as command_file:
+       command_file.write(jujuvnumber)
+
+
+   # Output
+   # print ("<!-- JUJUVERSION: " + jujuversion + " -->")
+
+def parseHelpLine(version, line):
+   singlecommand = line.split(' ',1)[0]
+   commandoutput = subprocess.check_output([JUJUEXE,'help', singlecommand])
+   commandoutput = bytes.decode(commandoutput)
+   
+   # Create folder to hold versioned help files
+   if not os.path.exists(version):
+       os.makedirs(version)
+
+   # Create a text file containing the help for each command
+   with open((os.path.join(version,singlecommand)), "w") as command_file:
+       command_file.write(commandoutput)
+
+if __name__ == '__main__':
+    main()
