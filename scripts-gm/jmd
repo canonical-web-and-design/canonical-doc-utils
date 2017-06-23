@@ -1,0 +1,41 @@
+#!/usr/bin/env python3
+import argparse
+import subprocess
+import sys
+
+JUJUEXE = "juju"
+ENCSTRING = "no-highlight"
+
+def parse_args(parser, args=None):
+#    if args is None:
+#        args = sys.argv[1:]
+    return parser.parse_args(args)
+
+
+def main():
+   parser = argparse.ArgumentParser(description='Execute juju with provided arguments and encapsulate output for use within markdown documentation.')
+   parser.add_argument('jujuargs', nargs=argparse.REMAINDER)
+   args = parse_args(parser)
+
+   # Get version string
+   jujuversion = subprocess.check_output([JUJUEXE, 'version'], universal_newlines=False)
+
+   # Run Juju with arguments
+   jujuoutput = subprocess.check_output([JUJUEXE] + args.jujuargs)
+
+   # Remove byte code andsssss feed
+   jujuversion = bytes.decode(jujuversion)
+   jujuversion = jujuversion.strip('\n')
+
+   jujuoutput = bytes.decode(jujuoutput)
+   jujuoutput = jujuoutput[:-1]
+
+   # Output
+   print ("<!-- JUJUVERSION: " + jujuversion + " -->")
+   print ("<!-- JUJUCOMMAND: " + JUJUEXE + " " + " ".join(args.jujuargs) + " -->")
+   print ("```" + ENCSTRING)
+   print (jujuoutput)
+   print ("```")
+
+if __name__ == '__main__':
+    main()
