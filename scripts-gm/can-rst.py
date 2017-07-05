@@ -8,7 +8,7 @@
 #   install pandoc: sudo apt install pandoc
 #   install panflute: pip install panflute
 #
-# Use this script with Pandoc's the filter argument: 
+# Use this script with Pandoc's filter argument: 
 #  pandoc --from markdown_github --to rst --output file.rst input_file.md --filter can-rst.py
 
 from panflute import CodeBlock, Str
@@ -31,7 +31,7 @@ def filterDoc(elem, doc):
     if isinstance(elem, pf.Para) and is_metadata(elem):
         return []
 
-    # replace links to md files with links to their html equivalent
+    # replace links to md files with links to their html equivalents
     elif isinstance(elem, pf.Link) and elem.url.endswith('.md'):
         elem.url = elem.url[:-3] + '.html'
 
