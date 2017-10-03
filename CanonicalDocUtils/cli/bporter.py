@@ -8,6 +8,7 @@ import os
 from github import Github
 from github import GithubException
 
+from CanonicalDocUtils import __version__
 from .utils import sync
 from .utils import sshify
 
@@ -24,7 +25,7 @@ repo_dict = { 'juju':16817497,
 
 def main():
 
-    parser = argparse.ArgumentParser(description='Backporter for docs')
+    parser = argparse.ArgumentParser(description='Backporter for docs, version '+__version__)
     parser.add_argument('repo', nargs='?', help='github repo to operate on')
     parser.add_argument("-u","--user",
                         help="Username for accessing GitHub")

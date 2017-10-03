@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
 from setuptools import setup, find_packages
-
+import CanonicalDocUtils
 
 setup(name='CanonicalDocUtils',
-      version='0.2.16',
+      version=CanonicalDocUtils.__version__,
       description='Utilities for managing docs team tasks',
       author='Canonical Docs team',
       author_email='nick.veitch+pypi@canonical.com',
