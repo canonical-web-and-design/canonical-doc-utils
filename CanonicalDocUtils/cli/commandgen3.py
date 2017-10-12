@@ -109,10 +109,10 @@ def main():
               section = section+'\n'+pad + line.decode('utf8','ignore')
         details= details+section+'\n\n'
         # unpleasantness to get around silly wWindows paths in text
-        if (c.split()[0] == 'autoload-credentials'):
+        if (c.split()[0] == b'autoload-credentials'):
           details = details.replace('\x07','\\a')
           details = details.replace('\\','\\\\')
-          print('ping')
+          
       else:
         print("**SEVERE WARNING**: {} has no DETAILS!".format(c.split()[0]))
         details=''
@@ -136,15 +136,16 @@ def main():
       else:
         print("**SEVERE WARNING**: {} has no Options!".format(c.split()[0]))
         options=''
-
+      options=str(options).replace('<','&lt;')
+      options.replace('>','&gt;')
       # get usage and summary
       q= re.compile(u'Usage:(.+?)\n\nSummary:\n(.+?)$',re.DOTALL)
       x = re.search( q, htext)    
 #      usage=pad+"**Usage:** `"+x.groups()[0].decode('utf-8')+"`\n\n"
       usage=pad+"**Usage:** `"+x.groups()[0]+"`\n\n"
 
-      if (c.split()[0] == 'add-storage'):
-        usage = "    **Usage:** ` juju add-storage [options] <unit name> <charm storage name> | <charm storage name>=<storage constraints> ... `\n\n"
+      if (c.split()[0] == b'add-storage'):
+        usage = "    **Usage:** ` juju add-storage [options] <unit name> <charm storage name>[=<storage constraints>] ... `\n\n"
 #      summary=pad+"**Summary:**\n\n"+pad+x.groups()[1].decode('utf-8')+"\n\n"
       summary=pad+"**Summary:**\n\n"+pad+x.groups()[1]+"\n\n"
       outfile.write(header+usage+summary+options+details+examples+also+alias+'\n\n')
