@@ -1,3 +1,5 @@
+[![Snap Status](https://build.snapcraft.io/badge/canonical-docs/canonical-doc-utils.svg)](https://build.snapcraft.io/user/canonical-docs/canonical-doc-utils)
+
 # canonical-doc-utils
 Tools used for working with Markdown/documentation-builder repositories. The individual tools and usage are detailed below
 
