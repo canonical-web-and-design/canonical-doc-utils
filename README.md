@@ -56,17 +56,28 @@ usage: discourse-put.py [-h] [-s SERVER] [-u USER] [-k KEY] [-c CATEGORY]
 
 Post Markdown or other text to discourse 1.2.19
 
-optional arguments:
+arguments:
+
   -h, --help            show this help message and exit
+  
   -s SERVER, --server SERVER
+  
                         URL of discourse instance
+                        
   -u USER, --user USER  Username
+  
   -k KEY, --key KEY     api key for this discourse
+  
   -c CATEGORY, --category CATEGORY
+  
                         The category to make this post in
+                        
   -t TITLE, --title TITLE
+  
                         the title of the topic
+                        
   -b BODY, --body BODY  A string containing the body text of the post
+  
   -f FILE, --file FILE  A file containing the body of the post
 
 Example:
