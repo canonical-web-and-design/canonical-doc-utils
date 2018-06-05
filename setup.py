@@ -20,7 +20,7 @@ setup(name='CanonicalDocUtils',
             'docs-backport=CanonicalDocUtils.cli.bporter:main',
             'docs-cleanfork=CanonicalDocUtils.cli.cleanfork:main',
             'docs-juju-commandgen=CanonicalDocUtils.cli.commandgen3:main',
-            'docs-discourse-put=CanonicalDocUtils.cli.discourse-put:main',
+            'docs-discourse-put=CanonicalDocUtils.cli.discourse_put:main',
         ],
 
     }
