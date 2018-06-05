@@ -22,4 +22,4 @@ parts:
   canonical-doc-utils:
     plugin: python
     source: https://github.com/canonical-documentation/canonical-doc-utils.git
-
+    requirements: requirements.txt
