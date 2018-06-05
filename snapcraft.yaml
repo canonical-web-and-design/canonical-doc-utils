@@ -16,6 +16,8 @@ apps:
     command: bin/docs-cleanfork
   juju-commandgen:
     command: bin/docs-juju-commandgen
+  discourse-put:
+    command: bin/docs-discourse-put
 parts:
   canonical-doc-utils:
     plugin: python
