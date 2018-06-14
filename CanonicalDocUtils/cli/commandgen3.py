@@ -13,8 +13,8 @@ def main():
   pagetext=(u"Title:Juju commands and usage\n\n"
             "# Juju Command reference\n\n"
             "You can get a list of all Juju commands by invoking `juju help\n"
-            "commands` in a terminal. To drill down into each command\n"
-            "use `juju help <command name>`.\n\n"
+            "commands` in a terminal.\n\n"
+	    "To drill down into each command use `juju help <command name>`.\n\n"
             "This same information is also provided below. Click on the\n"
             "triangle alongside a command to view that command's entry.\n\n")
 
