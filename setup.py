@@ -14,6 +14,8 @@ setup(name='CanonicalDocUtils',
       install_requires=[
         "sh>=1.12.0",
         "PyGithub>=1",
+        "requests>=2.8.1",
+        "PyYAML>=1",
       ],
       entry_points={
         'console_scripts': [
