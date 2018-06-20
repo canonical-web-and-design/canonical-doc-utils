@@ -11,7 +11,7 @@ def strip_comments(text):
     """
     Remove any HTML comments (<!-- xxx -->) from the supplied text
     """
-    regex = r"""^<!--(.*?)-->"""
+    regex = r"""^\s*<!--(.*?)-->"""
     comments = re.compile(regex,
                           re.IGNORECASE |
                           re.VERBOSE |
@@ -25,8 +25,6 @@ def get_link(text):
     """
     Returns a dict containing { title: , source:, location:}
     for link found in supplied text, or nothing if no link
-    
-    
     """
     link = {}
     regex = r"\[(.+)\]\((.+)\)"
@@ -36,7 +34,9 @@ def get_link(text):
         link['title'] = match.groups()[0]
         link['source'] = match.groups()[1]
         link['location'] = match.groups()[1].split('/')[-2] + '.md'
-    return(link)
+        return(link)
+    else:
+        return(None)
 
 
 def get_header_groups(text):
@@ -60,6 +60,33 @@ def get_header_groups(text):
     if len(headers):
         headers[-1]['text'] = text[headers[-1]['start']+len(headers[-1]['header']):]
     return(headers)
+  
+  
+def get_items(text):
+    """
+    Returns a list containing dicts of links found in a markdown list
+    or None if no links found
+    """
+    items = []
+    regex = r"^( {0,3})(\d{1,9}[.)]|[+\-*])\s{1,4}(.+)"
+    matches = re.finditer(regex, text, re.MULTILINE)
+    level=0
+    if matches:
+        for m in matches:
+            indent = len(m.groups()[0])
+            l = get_link(m.groups()[2])
+            if l:
+                # level assumes multiple-of-two indents
+                l['level']= int(len(m.groups()[0])/2)
+                items.append(l)
+        #last item
+        items = ttree_to_json(items)
+        # if there is only one, return a list anyhow
+        if type(items) == dict:
+          items = [items]
+        return(items)
+    else:
+        return(None)
 
 
 def dict_add(adict, key, val):
@@ -97,7 +124,6 @@ def ttree_to_json(ttree, level=0):
             dict_add(result, 'source', cn['source'])
         elif nn['level']>level:
             rr = ttree_to_json(ttree[i+1:], level=nn['level'])
-            print("rr = ", rr)
             rr = unravel(rr)
             dict_add(result, 'children', rr)
         else:
@@ -106,7 +132,9 @@ def ttree_to_json(ttree, level=0):
             dict_add(result, 'location', cn['location'])
             result = unravel(result)
             return result
-    return result     
+    if result:
+        return result 
+    return(None)
   
 
 def unravel(rr):
@@ -134,6 +162,15 @@ def md2yaml(text):
   content = strip_comments(text)
   print(content)
   heads = get_header_groups(content)
+  print(heads)
+  for h in heads:
+      # get links from lists in text
+      i = get_items(h['text'])
+      h['children']=i
+      h['title'] = h['groups'][1]
+      del h['start']
+      del h['text']
+      del h['groups']
   print(heads)
   return("not done yet")
 
