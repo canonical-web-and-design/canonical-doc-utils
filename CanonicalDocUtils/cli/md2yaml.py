@@ -50,7 +50,7 @@ def get_header_groups(text):
     matches = re.finditer(regex, text, re.IGNORECASE | re.VERBOSE | re.DOTALL)
     
     for m in matches:
-        headers.append({'start': m.start(), 'header': m.group(), 'groups': m.groups()})
+        headers.append({'start': m.start(), 'header': m.group().strip(), 'groups': m.groups()})
 
     # loop through headers and store text from beneath them
     for x, h in enumerate(headers[:-1]):
@@ -73,14 +73,17 @@ def get_items(text):
     level=0
     if matches:
         for m in matches:
+            
             indent = len(m.groups()[0])
             l = get_link(m.groups()[2])
+            print(l)
             if l:
                 # level assumes multiple-of-two indents
                 l['level']= int(len(m.groups()[0])/2)
                 items.append(l)
         #last item
-        items = ttree_to_json(items)
+        items = ttree2_to_json(items)
+        print(items)
         # if there is only one, return a list anyhow
         if type(items) == dict:
           items = [items]
@@ -88,22 +91,9 @@ def get_items(text):
     else:
         return(None)
 
-
-def dict_add(adict, key, val):
-    """
-    Insert a value in dict at key if one does not exist
-    Otherwise, convert value to list and append
-    """
-    if key in adict:
-        if type(adict[key]) != list:
-            adict[key] = [adict[key]]
-            adict[key].append(val)
-    else:
-        adict[key] = val
-
-    
-def ttree_to_json(ttree, level=0):
-    result = {}
+  
+def ttree2_to_json(ttree, level=0):
+    result = []
     for i in range(0,len(ttree)):
         cn = ttree[i]
         try:
@@ -119,42 +109,20 @@ def ttree_to_json(ttree, level=0):
 
         # Recursion
         if nn['level']==level:
-            dict_add(result, 'title', cn['title'])
-            dict_add(result, 'location', cn['location'])
-            dict_add(result, 'source', cn['source'])
+            itemdict = { 'title': cn['title'],  'location': cn['location'],'source': cn['source'] }
+            result.append(itemdict)
         elif nn['level']>level:
-            rr = ttree_to_json(ttree[i+1:], level=nn['level'])
-            rr = unravel(rr)
-            dict_add(result, 'children', rr)
+            rr = ttree2_to_json(ttree[i+1:], level=nn['level'])
+            itemdict = { 'title': cn['title'],  'location': cn['location'],'source': cn['source'] }
+            itemdict['children'] = rr
+            result.append(itemdict)
         else:
-            dict_add(result, 'source', cn['source'])
-            dict_add(result, 'title', cn['title'])
-            dict_add(result, 'location', cn['location'])
-            result = unravel(result)
+            itemdict = { 'title': cn['title'],  'location': cn['location'],'source': cn['source'] }
+            result.append(itemdict)
             return result
     if result:
         return result 
-    return(None)
-  
-
-def unravel(rr):
-    """
-    For the case where there are multiple title/links in the tree, 
-    they are initially organised as e.g. 'title' : [a,b,c] 
-    This function converts such a dict instead to a list of dicts with one value each
-    """
-
-    if type(rr) != dict:
-      return(rr)
-    if type(rr['title']) != list:
-      return(rr)
-    ret_list = []
-    for i in range(len(rr['title'])):      
-      newdict = { 'title':   rr['title'][i],
-                 'location': rr['location'][i],
-                 'source':   rr['source'][i] }
-      ret_list.append(newdict)
-    return(ret_list)  
+    return(None)  
 
 
 def md2yaml(text):
@@ -166,12 +134,14 @@ def md2yaml(text):
   for h in heads:
       # get links from lists in text
       i = get_items(h['text'])
+      print(i)
       h['children']=i
       h['title'] = h['groups'][1]
       del h['start']
       del h['text']
       del h['groups']
-  print(heads)
+  print(yaml.dump(heads, default_flow_style=False))
+
   return("not done yet")
 
 
