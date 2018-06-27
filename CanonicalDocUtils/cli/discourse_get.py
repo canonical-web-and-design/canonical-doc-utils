@@ -6,9 +6,9 @@ import os
 import yaml
 import re
 import requests
+import time
 import six
 from md2json import md2json
-#from collections import defaultdict
 
 # build in some defaults?
 snapc = 'https://forum.snapcraft.io/t/documentation-outline/3781'
@@ -16,7 +16,7 @@ snapc = 'https://forum.snapcraft.io/t/documentation-outline/3781'
 def get_raw_url(url):
     r = url.split('/')
     r = r[0]+'//'+r[2]+'/raw/'+r[-1]
-    return(r)
+    return(r)  
   
   
 def nested_fetch(document):
@@ -41,7 +41,7 @@ def fetch_and_save(link_list, prefix, out_dir,args):
     for l in link_list:
         url = get_raw_url(prefix+l['source'])
         if args.verbose:
-          print('fetching',url)
+          print('fetching \u001b[36m{} \u001b[0m'.format(url))
         try:
           content = requests.get(url)
         except:
@@ -51,15 +51,27 @@ def fetch_and_save(link_list, prefix, out_dir,args):
           print("Error fetching url:",url)
           exit(1)
         #process content
+        text = content.text
         #### find and replace relative links
+        #regex = re.compile("\[(.*?)\]\((.*?)\)", re.MULTILINE)
+        # for the moment, just replace ones we know about:
+        for i in link_list: 
+            text = re.sub(i['source'], i['location'], text, flags=re.MULTILINE)
+            
         #### do something with images if required
+        
+        # append timestamp and link to source
+        footer_time =  time.strftime("%Y-%m-%d at %H:%M:%S",time.gmtime())
+        footer = "<br><hr><br><div class='footer'>For questions and comments see <a href='"+prefix+l['source']+"'>the forum topic</a>."
+        footer += "<div class='footer'> Page generated on "+footer_time+ " UTC.</div>"
+        text += footer
         # output file
         out_filename = os.path.join(out_dir,l['location'])
+        if args.verbose:
+            print('Writing markdown file \u001b[34m {} \u001b[0m'.format(out_filename))
         with open(out_filename,'w') as o:
-            o.write(content.text)
+            o.write(text)
             o.close()
-        
-      
       
       
 def discourse_get(args):
@@ -71,7 +83,6 @@ def discourse_get(args):
     raw_url = get_raw_url(args.source)
     prefix = raw_url.split('/')
     prefix = prefix[0]+'//'+prefix[2]
-    print(prefix)
     try:
         result = requests.get(raw_url)
     except:
@@ -91,17 +102,12 @@ def discourse_get(args):
         o.write(metadata_yaml)
         o.close()
     # find all links and source
-    link_list = nested_fetch(metadata)
+    gen_list = nested_fetch(metadata)
+    link_list=[]
+    for l in gen_list:
+      link_list.append(l)  
     fetch_and_save(link_list, prefix, out_dir,args)
     # fetch, change and write files
-    print(link_list)
-    for l in link_list:
-      print(l)
-    
-
-
-
-
 
 
 def main():
@@ -120,8 +126,8 @@ def main():
                      help = "A string containing the discourse url")
   parser.add_argument("-o", "--output_dir",
                       help = "The output directory for generated files") 
-  parser.add_argument("-v", "--verbose", 
-                      help = "The output directory for generated files") 
+  parser.add_argument("-v", "--verbose", dest='verbose', action='store_true',
+                      help = "Verbose output") 
   args = parser.parse_args()
   result = discourse_get(args)
   

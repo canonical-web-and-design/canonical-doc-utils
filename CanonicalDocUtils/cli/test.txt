@@ -1,0 +1,65 @@
+This is the experimental snap, snapd, and snapcraft documentation that is being worked on to eventually become the main source of information about how to use and publish snaps, and how to develop the tools around them.
+
+Most of this documentation can be collaboratively discussed and changed in the respective topic in the forum. See the [documentation guidelines](/t/documentation-guidelines/3798) if you'd like to contribute.
+
+Choose the topic you'd like to read about.
+
+# Content
+
+### Using
+
+* [Getting started](/t/getting-started/3876)
+* [Channels](/t/channels/551)
+* [Commands and aliases](/t/commands-and-aliases/3950)
+* [Service management](/t/service-management/3965)
+* [Configuration in snaps](/t/configuration-in-snaps/510)
+* [System options](/t/configuration-options/87)
+* [The /snap directory](/t/the-snap-directory/2817)
+* [Enabling swap on Ubuntu Core](/t/enabling-swap-on-core/5440)
+* [Ubuntu Core boot mode explained](/t/5464)
+
+<!--
+IDEAS:
+* Installing snapd => Index of "Installing on <distro>" subpages
+* Commands and aliases
+* Service management
+* Interface management
+* Changes and tasks
+* Looking inside snaps => snap run --shell, etc
+* Core devices => Ubuntu Core, etc
+-->
+
+### Publishing
+* [The snap format](/t/the-snap-format/698)
+* [The gadget snap](/t/the-gadget-snap/696)
+* [The kernel snap](/t/the-kernel-snap/697)
+* [The content interface](/t/the-content-interface/1074)
+* [The dbus interface](/t/the-dbus-interface/2038)
+* [The desktop interfaces](/t/the-desktop-interfaces/2042)
+* [Supported hooks](/t/supported-snap-hooks/3795)
+* [Permission requests](/t/permission-requests/455)
+* [Tab completion](/t/tab-completion/2261)
+* [Building with LXD](/t/clean-build-using-lxc/4157)
+* [Building with Docker](/t/build-on-docker/4158)
+* [Building reusable parts](/t/remote-reusable-parts/4233)
+* [Snapcraft plugins](/t/snapcraft-plugins/4284)
+  * [Maven](/t/mavin-plugin/4282)
+  * [Gradle](/t/gradle-plugin/5390)
+
+<!--
+IDEAS:
+* Creating a snap
+* Layouts
+* Assertions
+-->
+
+### Developing
+
+* [Roadmap](/t/the-snapd-roadmap/1973)
+* [Documentation guidelines](/t/documentation-guidelines/3798)
+
+<!--
+IDEAS:
+* Daemon API => Index with basics and subpages
+* Store API
+-->
