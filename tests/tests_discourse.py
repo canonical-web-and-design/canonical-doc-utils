@@ -1,7 +1,7 @@
 import unittest
-from CanonicalDocUtils.cli.md2yaml import get_link
-from CanonicalDocUtils.cli.md2yaml import strip_comments
-from CanonicalDocUtils.cli.md2yaml import get_items
+from CanonicalDocUtils.cli.md2json import get_link
+from CanonicalDocUtils.cli.md2json import strip_comments
+from CanonicalDocUtils.cli.md2json import get_items
 
 class TestGetLink(unittest.TestCase):
 # get_link should return { title: , source:, location:} or nothing
@@ -39,4 +39,5 @@ class TestGetItems(unittest.TestCase):
         self.assertEqual(get_items(t)[0]['location'],'topic-text.md' )
         self.assertEqual(get_items(t)[0]['title'],'a link' )
         self.assertEqual(get_items(t)[0]['source'],'/t/topic-text/104' )
+        
 # get_header_groups should return list of headers and blocks of text between
