@@ -7,6 +7,7 @@ import yaml
 import re
 import requests
 import time
+import textwrap
 import six
 from md2json import md2json
 
@@ -36,20 +37,33 @@ def nested_fetch(document):
                     for result in nested_fetch(d):
                         yield result
 
+def quote_sub(match):
+    text = re.sub('\[/?quote\]','',match.group()).strip()
+    char_info= 'ⓘ'
+    char_warning = '⚠ '
+    # work out what type of note it is
+    if text[0] == char_info:
+        text = '!!! Note:\n'+ textwrap.fill(text[1:].strip(), width = 75,initial_indent = ' ' *4, subsequent_indent=' '*4)
+    elif text[0] == char_warning:
+        text = '!!! Warning:\n'+ textwrap.fill(text[1:].strip(), width = 75,initial_indent = ' ' *4, subsequent_indent=' '*4) 
+    else:
+        # default case where content is unknown is to omit it
+        text = ''
+    return(text)
                       
 def fetch_and_save(link_list, prefix, out_dir,args):
     for l in link_list:
         url = get_raw_url(prefix+l['source'])
         if args.verbose:
-          print('fetching \u001b[36m{} \u001b[0m'.format(url))
+            print('fetching \u001b[36m{} \u001b[0m'.format(url))
         try:
-          content = requests.get(url)
+            content = requests.get(url)
         except:
-          print("Error fetching url:",url)
-          exit(1)
+            print("Error fetching url:",url)
+            exit(1)
         if (content.status_code != 200):
-          print("Error fetching url:",url)
-          exit(1)
+            print("Error fetching url:",url)
+            exit(1)
         #process content
         text = content.text
         #### find and replace relative links
@@ -59,6 +73,8 @@ def fetch_and_save(link_list, prefix, out_dir,args):
             text = re.sub(i['source'], i['location'], text, flags=re.MULTILINE)
             
         #### do something with images if required
+        #### Fix quote stuff and convert to admonitions
+        text = re.sub(r"\[quote\](.*?)\[/quote\]",quote_sub, text, flags=re.DOTALL)
         
         # append timestamp and link to source
         footer_time =  time.strftime("%Y-%m-%d at %H:%M:%S",time.gmtime())
@@ -78,7 +94,6 @@ def discourse_get(args):
     out_dir = args.output_dir
     if not out_dir:
         out_dir='.'
-    # check url is valid
     # fetch url
     raw_url = get_raw_url(args.source)
     prefix = raw_url.split('/')
@@ -105,7 +120,7 @@ def discourse_get(args):
     gen_list = nested_fetch(metadata)
     link_list=[]
     for l in gen_list:
-      link_list.append(l)  
+        link_list.append(l)  
     fetch_and_save(link_list, prefix, out_dir,args)
     # fetch, change and write files
 
