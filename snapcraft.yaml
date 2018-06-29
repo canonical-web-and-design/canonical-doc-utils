@@ -18,6 +18,8 @@ apps:
     command: bin/docs-juju-commandgen
   discourse-put:
     command: bin/docs-discourse-put
+  discourse-get:
+    command: bin/docs-discourse-get
 parts:
   canonical-doc-utils:
     plugin: python

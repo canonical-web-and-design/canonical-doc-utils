@@ -14,6 +14,8 @@ setup(name='CanonicalDocUtils',
       install_requires=[
         "sh>=1.12.0",
         "PyGithub>=1",
+        "requests>=2.8.1",
+        "PyYAML>=1",
       ],
       entry_points={
         'console_scripts': [
@@ -21,6 +23,7 @@ setup(name='CanonicalDocUtils',
             'docs-cleanfork=CanonicalDocUtils.cli.cleanfork:main',
             'docs-juju-commandgen=CanonicalDocUtils.cli.commandgen3:main',
             'docs-discourse-put=CanonicalDocUtils.cli.discourse_put:main',
+            'docs-discourse-get=CanonicalDocUtils.cli.discourse_get:main',
         ],
 
     }
