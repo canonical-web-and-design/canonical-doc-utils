@@ -9,7 +9,8 @@ import requests
 import time
 import textwrap
 import six
-from md2json import md2json
+from CanonicalDocUtils import __version__
+from CanonicalDocUtils import md2json
 
 # build in some defaults?
 snapc = 'https://forum.snapcraft.io/t/documentation-outline/3781'
@@ -126,7 +127,7 @@ def discourse_get(args):
 
 
 def main():
-  d = """discourse-get
+  d = "discourse-get "+__version__+"""
 
          Given a url pointing to a discourse topic, containing a list of
          links, discourse-get will:
