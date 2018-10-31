@@ -87,7 +87,7 @@ def main():
           process_block = False
           if line == '':
             process_block = True
-          elif line[-1] == ':':
+          elif line[-1] == ':' or line[-1] == '.':
             process_block = True
           
           if process_block and block != '':
