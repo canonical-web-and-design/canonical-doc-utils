@@ -73,23 +73,33 @@ def main():
         htext=htext[:x.start()] # truncate the bit we matched
         examples=pad+'**Examples:**\n\n'
        
-        block = ""
+        block = ''
         for line in match:
-          # Collect text until we see an empty line and then decide
-          # what to do with the block
-          if line != '':
-            block = block + '\n' + pad + line
-          else:
-            if block != '':
-                if block[0] == ' ':
-                  examples = examples + pad
-                
-                if block[-1] == ':':
-                    examples = examples + '\n' + pad + block + '\n\n'
-                else:
-                    examples = examples + pad + block +'\n'
+          # Special case lines that are supposed to be comments
+          if line.find("# ") != -1:
+            line = line.replace("# ", "").lstrip()
 
-                block = ""
+          # Collect text as a block
+          if line != '':
+            block = block + pad + line + '\n'
+        
+          # Decide if we need to process the block
+          process_block = False
+          if line == '':
+            process_block = True
+          elif line[-1] == ':':
+            process_block = True
+          
+          if process_block and block != '':
+            #sys.stderr.write("{"+block+"}\n")
+            if block[-1] == ':':
+                examples = examples + '\n' + block + '\n\n'
+            else:
+                examples = examples + block +'\n'
+
+            block = ""
+            process_block = False
+
         examples = examples+'\n\n'
       else:
         print("WARNING: {} has no examples!".format(c.split()[0]))
