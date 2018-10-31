@@ -3,6 +3,7 @@
 import subprocess
 import re
 import codecs
+import sys
 
 def main():
   
@@ -71,13 +72,24 @@ def main():
         match=htext[x.start()+10:].split('\n')
         htext=htext[:x.start()] # truncate the bit we matched
         examples=pad+'**Examples:**\n\n'
-        
+       
+        block = ""
         for line in match:
-          if (line !=''):
-            if (line[0]==' '):
-              examples=examples+pad
-              pass
-            examples = examples+pad+line+'\n'
+          # Collect text until we see an empty line and then decide
+          # what to do with the block
+          if line != '':
+            block = block + '\n' + pad + line
+          else:
+            if block != '':
+                if block[0] == ' ':
+                  examples = examples + pad
+                
+                if block[-1] == ':':
+                    examples = examples + '\n' + pad + block + '\n\n'
+                else:
+                    examples = examples + pad + block +'\n'
+
+                block = ""
         examples = examples+'\n\n'
       else:
         print("WARNING: {} has no examples!".format(c.split()[0]))
