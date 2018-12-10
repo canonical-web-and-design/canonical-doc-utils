@@ -3,6 +3,7 @@
 import subprocess
 import re
 import codecs
+import sys
 
 def main():
   
@@ -12,11 +13,9 @@ def main():
   pad=u'   '
   pagetext=(u"Title:Juju commands and usage\n\n"
             "# Juju Command reference\n\n"
-            "You can get a list of all Juju commands by invoking `juju help\n"
-            "commands` in a terminal. To drill down into each command\n"
-            "use `juju help <command name>`.\n\n"
-            "This same information is also provided below. Click on the\n"
-            "triangle alongside a command to view that command's entry.\n\n")
+            "You can get a list of all Juju commands by invoking `juju help commands` in a terminal.\n\n"
+            "To drill down into each command use `juju help <command name>`.\n\n"
+            "This same information is also provided below. Click on a command to view information on it.\n\n")
 
   outfile.write(pagetext)
   commands = subprocess.check_output(['juju', 'help', 'commands']).splitlines()
@@ -71,13 +70,34 @@ def main():
         match=htext[x.start()+10:].split('\n')
         htext=htext[:x.start()] # truncate the bit we matched
         examples=pad+'**Examples:**\n\n'
-        
+       
+        block = ''
         for line in match:
-          if (line !=''):
-            if (line[0]==' '):
-              examples=examples+pad
-              pass
-            examples = examples+pad+line+'\n'
+          # Special case lines that are supposed to be comments
+          if line.find("# ") != -1:
+            line = line.replace("# ", "").lstrip()
+
+          # Collect text as a block
+          if line != '':
+            block = block + pad + line + '\n'
+        
+          # Decide if we need to process the block
+          process_block = False
+          if line == '':
+            process_block = True
+          elif line[-1] == ':' or line[-1] == '.':
+            process_block = True
+          
+          if process_block and block != '':
+            #sys.stderr.write("{"+block+"}\n")
+            if block[-1] == ':':
+                examples = examples + '\n' + block + '\n\n'
+            else:
+                examples = examples + block +'\n'
+
+            block = ""
+            process_block = False
+
         examples = examples+'\n\n'
       else:
         print("WARNING: {} has no examples!".format(c.split()[0]))
