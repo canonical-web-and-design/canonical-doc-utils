@@ -19,8 +19,9 @@ repo_dict = { 'juju':16817497,
              'conjure-up':85062558,
              'cloud-docs':83429066,
              'landscape':62312414,
-             'doctest':93037144
-           } 
+             'doctest':93037144,
+             'k8s-docs':142455969
+           }
 
 
 def cleanpulllist(list):
@@ -44,14 +45,14 @@ def main():
                         help="the branch to backport this to")
     args = parser.parse_args()
 
-    # get user/password if not supplied   
+    # get user/password if not supplied
     if not args.user:
       args.user = input("Github username: ")
     if not args.password:
       args.password = getpass.getpass("Github password or personal access token: ")
 
     g=Github(args.user, args.password)
-    
+
     # retrieve users name and email for git
     u=g.get_user()
     if u.email == '':
@@ -115,7 +116,7 @@ def main():
       msg = fetched.raw_data['commit']['message'].replace('\n','/')
       print("sha({}) - {}".format(commits[x].sha,msg[:45]))
 
-    # find fork url 
+    # find fork url
     fork_url=''
     forks = list(docsrepo.get_forks())
 
@@ -152,7 +153,7 @@ def main():
     # set git options (in case globals not available - e.g. in a snap)
     git.config('user.email', u.email)
     git.config('user.name', u.name)
-    
+
     # Fetch branch and apply commits
     print("Fetching upstream target branch...")
     git.fetch('upstream', target)
@@ -190,13 +191,12 @@ def main():
     try:
       l = docsrepo.get_label('doc-utils')
       issue.set_labels(l)
-    except GithubException as e:     
+    except GithubException as e:
       print("ERROR: Failed to retrieve data from GitHub")
       print("  Github API Error code - {}".format(e.status))
-      print("  Message - {} ".format(e.data['message']))        
+      print("  Message - {} ".format(e.data['message']))
     except:
       print("Unexpected error:", sys.exc_info()[0])
-      raise  
+      raise
 if __name__ == '__main__':
     main()
-    
